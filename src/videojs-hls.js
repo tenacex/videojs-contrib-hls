@@ -162,6 +162,8 @@ videojs.HlsHandler.prototype.src = function(src) {
     this.options_.withCredentials = this.source_.withCredentials;
   } else if (videojs.options.hls) {
     this.options_.withCredentials = videojs.options.hls.withCredentials;
+  } else if (this.tech_.options_ !== undefined && this.tech_.options_.hls !== undefined && this.tech_.options_.hls.withcredentials) {
+    this.options_.withCredentials = this.tech_.options_.hls.withcredentials;
   }
   this.playlists = new videojs.Hls.PlaylistLoader(this.source_.src, this.options_.withCredentials);
 
@@ -446,7 +448,7 @@ videojs.HlsHandler.prototype.setupFirstPlay = function() {
  */
 videojs.HlsHandler.prototype.play = function() {
   this.loadingState_ = 'segments';
-
+  console.log("triggered play");
   if (this.tech_.ended()) {
     this.tech_.setCurrentTime(0);
   }
@@ -1050,7 +1052,7 @@ videojs.HlsHandler.prototype.loadSegment = function(segmentInfo) {
   this.segmentXhr_ = videojs.Hls.xhr({
     uri: segmentInfo.uri,
     responseType: 'arraybuffer',
-    withCredentials: this.source_.withCredentials,
+    withCredentials: this.options_.withCredentials,
     // Set xhr timeout to 150% of the segment duration to allow us
     // some time to switch renditions in the event of a catastrophic
     // decrease in network performance or a server issue.
@@ -1210,6 +1212,7 @@ videojs.HlsHandler.prototype.updateEndHandler_ = function () {
   currentMediaIndex = segmentInfo.mediaIndex + (segmentInfo.mediaSequence - playlist.mediaSequence);
   currentBuffered = this.findBufferedRange_();
 
+
   // if we switched renditions don't try to add segment timeline
   // information to the playlist
   if (segmentInfo.playlist.uri !== this.playlists.media().uri) {
@@ -1224,14 +1227,21 @@ videojs.HlsHandler.prototype.updateEndHandler_ = function () {
   // possible that imprecise timing information may cause the seek to
   // end up earlier than the start of the range
   // in that case, seek again
+
+
+
+
+
   seekable = this.seekable();
   if (this.tech_.seeking() &&
       currentBuffered.length === 0) {
     if (seekable.length &&
         this.tech_.currentTime() < seekable.start(0)) {
       var next = this.findNextBufferedRange_();
+    //console.log(next);
       if (next.length) {
         videojs.log('tried seeking to', this.tech_.currentTime(), 'but that was too early, retrying at', next.start(0));
+
         this.tech_.setCurrentTime(next.start(0) + TIME_FUDGE_FACTOR);
       }
     }

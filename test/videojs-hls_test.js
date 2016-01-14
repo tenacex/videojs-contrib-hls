@@ -1840,6 +1840,19 @@ test('if withCredentials global option is used, withCredentials is set on the XH
   videojs.options.hls = hlsOptions;
 });
 
+test('if withCredentials src option is used, withCredentials is set on the tech object', function() {
+  player.dispose();
+  player = createPlayer();
+  player.src({
+    src: 'http://example.com/media.m3u8',
+    type: 'application/vnd.apple.mpegurl',
+    withCredentials: true
+  });
+  openMediaSource(player);
+  ok(player.tech_.hls.options_.withCredentials,
+    "if withCredentials is used on src, withCredentials is set on tech_ object");
+});
+
 test('if withCredentials src option is used, withCredentials is set on the XHR object', function() {
   player.dispose();
   player = createPlayer();
