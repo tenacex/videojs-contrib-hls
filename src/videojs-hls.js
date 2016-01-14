@@ -448,7 +448,6 @@ videojs.HlsHandler.prototype.setupFirstPlay = function() {
  */
 videojs.HlsHandler.prototype.play = function() {
   this.loadingState_ = 'segments';
-  console.log("triggered play");
   if (this.tech_.ended()) {
     this.tech_.setCurrentTime(0);
   }
