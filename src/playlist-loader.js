@@ -252,6 +252,9 @@
           uri: resolveUrl(loader.master.uri, playlist.uri),
           withCredentials: withCredentials
         }, function(error, request) {
+          if (error) {
+            loader.state = startingState;
+          }
           haveMetadata(error, request, playlist.uri);
 
           if (error) {
